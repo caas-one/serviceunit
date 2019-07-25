@@ -1,0 +1,6 @@
+package tools
+
+const (
+	// Suffix Yaml
+	Suffix = ".yaml"
+)

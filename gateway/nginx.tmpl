@@ -1,0 +1,21 @@
+{{- range $upstream := .Upstreams}}
+upstream {{$upstream.Name}} {
+	{{- range $server := $upstream.UpstreamServers}}
+	server {{$server.Address}};
+    {{- end }}
+}
+{{- end }}
+
+{{- range $server := .Servers}}
+server {
+	listen 80;
+	server_name {{$server.Namespace}}.k8s.paas;
+	{{- range $location := $server.Locations}}
+	location /{{$location.Path}} {
+		proxy_redirect off;
+		proxy_set_header Host $host;
+		proxy_pass http://{{$location.UpstreamName}}/{{$location.Path}};
+	}
+	{{- end }}
+}
+{{- end }}

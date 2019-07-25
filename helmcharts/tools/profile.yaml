@@ -1,0 +1,523 @@
+namespace: newspace
+troubleShooting:
+  debugImage:
+    repository: artifact.paas.yp/yeepay-docker-dev-local/troubleshooting
+    tag: "201809271441"
+    pullPolicy: Always
+  resources:
+    limits:
+      cpu: 200m
+      memory: 200M
+    requests:
+      cpu: 50m
+      memory: 100M
+serviceUnits:
+- name: accounting
+  applications:
+  - name: account-hessian
+    deployment:
+      image: artifact.paas.yp/yeepay-docker-dev-local/account-hessian:201905211119_856bcee6
+      replica: 1
+      env:
+      - name: YP_APP_NAME
+        value: account-hessian
+      - name: YP_DATA_CENTER
+        value: CICD_DEFAULT
+      - name: YP_DEPLOY_ENV
+        value: product
+      - name: DUBBO_APPLICATION_ENVIRONMENT
+        value: default
+      - name: YP_JVM_RESOURCE_CPU
+        value: "2"
+      - name: YP_JVM_RESOURCE_MEMORY
+        value: 4G
+      resources:
+        limits:
+          cpu: "2"
+          memory: 4G
+        requests:
+          cpu: 200m
+          memory: 2G
+    service:
+      type: NodePort
+      port: "8080"
+      targetPort: "8080"
+      nodePort: "30480"
+- name: account-pay
+  applications:
+  - name: account-pay-hessian
+    deployment:
+      image: artifact.paas.yp/yeepay-docker-dev-local/account-pay-hessian:201905091216
+      replica: 1
+      env:
+      - name: DB_JDBCURL
+        value: jdbc:db2://db2.bass.3g:50002/cicd3g
+      - name: DB_USER
+        value: testadm
+      - name: DB_PASSWORD
+        value: mWekChrhA6w7FqG/gKE2Qg==
+      - name: DB_MIN_CON
+        value: "2"
+      - name: DB_MAX_CON
+        value: "5"
+      - name: DUBBO_APPLICATION_ENVIRONMENT
+        value: default
+      - name: REDIS_URL
+        value: cuscenter.redis.yp:26379
+      - name: REDIS_MASTER_NAME
+        value: mymaster
+      - name: REDIS_MAX_TOTAL
+        value: "20"
+      - name: REDIS_MAX_IDLE
+        value: "5"
+      - name: REDIS_MAX_WAIT_TIME
+        value: "1000"
+      - name: REDIS_TEST_ON_BORROW
+        value: "true"
+      - name: REDIS_TEST_ON_RETURN
+        value: "true"
+      - name: REDIS_TIMEOUT
+        value: "2000"
+      - name: NEW_VERSION
+        value: "true"
+      - name: MODE
+        value: sentinel
+      - name: MQ_HOST
+        value: rabbitmq.bass.3g
+      - name: MQ_PORT
+        value: "5672"
+      - name: MQ_USER_NAME
+        value: accountpay
+      - name: MQ_PASSWORD
+        value: accountpay
+      - name: MQ_VERTUAL_HOST
+        value: account-pay
+      - name: MQ_RECEIVE_THREAD_COUNTS
+        value: "4"
+      - name: MQ_SEND_THREAD_COUNTS
+        value: "4"
+      - name: CONFIG_URL
+        value: http://172.17.102.5:8011/yeepay-config-server/hessian/ConfigQueryFacade
+      - name: CONFIG_NAMESPACE
+        value: default
+      - name: CFG_DB_URL
+        value: jdbc:db2://db2.bass.3g:50002/cicd3g
+      - name: CFG_DB_USER
+        value: testadm
+      - name: CFG_DB_PWD
+        value: mWekChrhA6w7FqG/gKE2Qg==
+      - name: CFG_DB_SCHEMA
+        value: CONFIG
+      - name: CFG_DB_MIN
+        value: "2"
+      - name: CFG_DB_MAX
+        value: "5"
+      - name: YP_APP_NAME
+        value: account-pay-hessian
+      - name: YP_DATA_CENTER
+        value: CICD_DEFAULT
+      - name: YP_DEPLOY_ENV
+        value: product
+      - name: YP_JVM_RESOURCE_CPU
+        value: "2"
+      - name: YP_JVM_RESOURCE_MEMORY
+        value: 4G
+      resources:
+        limits:
+          cpu: "2"
+          memory: 4G
+        requests:
+          cpu: 200m
+          memory: 2G
+    service:
+      type: NodePort
+      port: "8080"
+      targetPort: "8080"
+      nodePort: "30022"
+- name: bank
+  applications:
+  - name: bank-cpu-hessian
+    deployment:
+      image: artifact.paas.yp/yeepay-docker-dev-local/bank-cpu-hessian:201905131648_dee20b88
+      replica: 1
+      env:
+      - name: YP_APP_NAME
+        value: bank-cpu-hessian
+      - name: YP_DATA_CENTER
+        value: CICD_DEFAULT
+      - name: YP_DEPLOY_ENV
+        value: product
+      - name: DUBBO_APPLICATION_ENVIRONMENT
+        value: default
+      - name: YP_JVM_RESOURCE_CPU
+        value: "2"
+      - name: YP_JVM_RESOURCE_MEMORY
+        value: 4G
+      resources:
+        limits:
+          cpu: "2"
+          memory: 4G
+        requests:
+          cpu: 200m
+          memory: 2G
+    service:
+      type: NodePort
+      port: "8080"
+      targetPort: "8080"
+      nodePort: "30191"
+- name: configcenter
+  applications:
+  - name: configcenter-boss
+    deployment:
+      image: artifact.paas.yp/yeepay-docker-dev-local/configcenter-boss:201905150956_271180b6
+      replica: 1
+      env:
+      - name: YP_APP_NAME
+        value: configcenter-boss
+      - name: YP_DATA_CENTER
+        value: CICD_DEFAULT
+      - name: YP_DEPLOY_ENV
+        value: product
+      - name: DUBBO_APPLICATION_ENVIRONMENT
+        value: default
+      - name: YP_JVM_RESOURCE_CPU
+        value: "2"
+      - name: YP_JVM_RESOURCE_MEMORY
+        value: 4G
+      resources:
+        limits:
+          cpu: "2"
+          memory: 4G
+        requests:
+          cpu: 200m
+          memory: 2G
+    service:
+      type: NodePort
+      port: "8080"
+      targetPort: "8080"
+      nodePort: "30206"
+- name: nocard
+  applications:
+  - name: cwh-hessian
+    deployment:
+      image: artifact.paas.yp/yeepay-docker-dev-local/cwh-hessian:201905101905_36207931
+      replica: 1
+      env:
+      - name: YP_APP_NAME
+        value: cwh-hessian
+      - name: YP_DATA_CENTER
+        value: CICD_DEFAULT
+      - name: YP_DEPLOY_ENV
+        value: product
+      - name: DUBBO_APPLICATION_ENVIRONMENT
+        value: default
+      - name: YP_JVM_RESOURCE_CPU
+        value: "2"
+      - name: YP_JVM_RESOURCE_MEMORY
+        value: 4G
+      resources:
+        limits:
+          cpu: "2"
+          memory: 4G
+        requests:
+          cpu: 200m
+          memory: 2G
+    service:
+      type: NodePort
+      port: "8080"
+      targetPort: "8080"
+      nodePort: "30111"
+- name: custom
+  applications:
+  - name: merchant-platform-boss
+    deployment:
+      image: artifact.paas.yp/yeepay-docker-dev-local/merchant-platform-boss:201811011538
+      replica: 1
+      env:
+      - name: CFG_DB_URL
+        value: jdbc:db2://db2.bass.3g:50002/cicd3g
+      - name: CFG_DB_USER
+        value: testadm
+      - name: CFG_DB_PWD
+        value: mWekChrhA6w7FqG/gKE2Qg==
+      - name: CFG_DB_SCHEMA
+        value: CONFIG
+      - name: CFG_DB_MIN
+        value: "2"
+      - name: CFG_DB_MAX
+        value: "5"
+      - name: DUBBO_APPLICATION_ENVIRONMENT
+        value: default
+      - name: DUBBO_APPLICATION_ENVIRONMENT
+        value: product
+      - name: G2COPY_JDBCURL
+        value: jdbc:db2://db2.bass.3g:50003/cicd2g
+      - name: G2COPY_DRIVERCLASS
+        value: com.ibm.db2.jcc.DB2Driver
+      - name: G2COPY_DRIVERCLASS
+        value: com.ibm.db2.jcc.DB2Driver
+      - name: G2COPY_USER
+        value: mobilebe
+      - name: G2COPY_PASSWORD
+        value: fq7YjWsIMMq9L7v/BTcZ3A==
+      - name: G2COPY_SCHEMA
+        value: MOBILEBE
+      - name: G2COPY_MIN
+        value: "5"
+      - name: G2COPY_MAX
+        value: "20"
+      - name: CUSCENTER_JDBCURL
+        value: jdbc:db2://10.151.30.79:50001/cusapp
+      - name: CUSCENTER_DRIVERCLASS
+        value: com.ibm.db2.jcc.DB2Driver
+      - name: CUSCENTER_USER
+        value: testadm
+      - name: CUSCENTER_PASSWORD
+        value: mWekChrhA6w7FqG/gKE2Qg==
+      - name: CUSCENTER_SCHEMA
+        value: CUSCENTER
+      - name: CUSCENTER_MIN
+        value: "5"
+      - name: CUSCENTER_MAX
+        value: "20"
+      - name: CUSCENTERREAD_JDBCURL
+        value: jdbc:db2://10.151.30.79:50001/cusapp
+      - name: CUSCENTERREAD_DRIVERCLASS
+        value: com.ibm.db2.jcc.DB2Driver
+      - name: CUSCENTERREAD_USER
+        value: testadm
+      - name: CUSCENTERREAD_PASSWORD
+        value: mWekChrhA6w7FqG/gKE2Qg==
+      - name: CUSCENTERREAD_SCHEMA
+        value: CUSCENTER
+      - name: CUSCENTERREAD_MIN
+        value: "5"
+      - name: CUSCENTERREAD_MAX
+        value: "20"
+      - name: CUSLOG_JDBCURL
+        value: jdbc:db2://10.151.30.79:50001/cusapp
+      - name: CUSLOG_DRIVERCLASS
+        value: com.ibm.db2.jcc.DB2Driver
+      - name: CUSLOG_USER
+        value: testadm
+      - name: CUSLOG_PASSWORD
+        value: mWekChrhA6w7FqG/gKE2Qg==
+      - name: CUSLOG_SCHEMA
+        value: CUSCENTER
+      - name: CUSLOG_MIN
+        value: "5"
+      - name: CUSLOG_MAX
+        value: "20"
+      - name: SIGNINGQUERY_JDBCURL
+        value: jdbc:db2://db2.bass.3g:50002/cicd3g
+      - name: SIGNINGQUERY_DRIVERCLASS
+        value: com.ibm.db2.jcc.DB2Driver
+      - name: SIGNINGQUERY_USER
+        value: db2inst
+      - name: SIGNINGQUERY_PASSWORD
+        value: mvxxwVMPE6QLXzU+hu+WCQ==
+      - name: SIGNINGQUERY_SCHEMA
+        value: SIGNING
+      - name: SIGNINGQUERY_MIN
+        value: "5"
+      - name: SIGNINGQUERY_MAX
+        value: "20"
+      - name: YP2GDSTRX_JDBCURL
+        value: jdbc:db2://db2.bass.3g:50003/cicd2g
+      - name: YP2GDSTRX_DRIVERCLASS
+        value: com.ibm.db2.jcc.DB2Driver
+      - name: YP2GDSTRX_USER
+        value: mobilebe
+      - name: YP2GDSTRX_PASSWORD
+        value: fq7YjWsIMMq9L7v/BTcZ3A==
+      - name: YP2GDSTRX_SCHEMA
+        value: MOBILEBE
+      - name: YP2GDSTRX_MIN
+        value: "5"
+      - name: YP2GDSTRX_MAX
+        value: "20"
+      - name: YP_DEPLOY_ENV
+        value: product
+      - name: YP_APP_NAME
+        value: merchant-platform-boss
+      - name: YP_DATA_CENTER
+        value: CICD_DEFAULT
+      - name: YP_JVM_RESOURCE_CPU
+        value: "2"
+      - name: YP_JVM_RESOURCE_MEMORY
+        value: 4G
+      resources:
+        limits:
+          cpu: "2"
+          memory: 4G
+        requests:
+          cpu: 200m
+          memory: 2G
+    service:
+      type: NodePort
+      port: "8080"
+      targetPort: "8080"
+      nodePort: "30126"
+- name: yop
+  applications:
+  - name: yop-boss
+    deployment:
+      image: artifact.paas.yp/yeepay-docker-dev-local/yop-boss:201905091027
+      replica: 1
+      env:
+      - name: DUBBO_APPLICATION_ENVIRONMENT
+        value: default
+      - name: CFG_DB_URL
+        value: jdbc:db2://db2.bass.3g:50002/cicd3g
+      - name: CFG_DB_USER
+        value: testadm
+      - name: CFG_DB_PWD
+        value: mWekChrhA6w7FqG/gKE2Qg==
+      - name: CFG_DB_SCHEMA
+        value: CONFIG
+      - name: CFG_DB_MIN
+        value: "2"
+      - name: CFG_DB_MAX
+        value: "5"
+      - name: DSC_ENABLE
+        value: "true"
+      - name: DSC_SOAYOPMYSQL_JDBC_URL
+        value: jdbc:mysql://10.151.11.3:3306/yop_monitor
+      - name: DSC_SOAYOPMYSQL_DRIVER_CLASS
+        value: com.mysql.jdbc.Driver
+      - name: DSC_SOAYOPMYSQL_USER
+        value: yopapp
+      - name: DSC_SOAYOPMYSQL_PASSWORD
+        value: KY0ROHxIzmir1haeDDnpXw==
+      - name: DSC_SOAYOPMYSQL_MIN
+        value: "2"
+      - name: DSC_SOAYOPMYSQL_MAX
+        value: "5"
+      - name: DSC_SOAYOP_JDBC_URL
+        value: jdbc:db2://db2.bass.3g:50002/cicd3g
+      - name: DSC_SOAYOP_DRIVER_CLASS
+        value: com.ibm.db2.jcc.DB2Driver
+      - name: DSC_SOAYOP_USER
+        value: testadm
+      - name: DSC_SOAYOP_PASSWORD
+        value: mWekChrhA6w7FqG/gKE2Qg==
+      - name: DSC_SOAYOP_SCHEMA
+        value: SOA_YOP
+      - name: DSC_SOAYOP_MIN
+        value: "2"
+      - name: DSC_SOAYOP_MAX
+        value: "5"
+      - name: DSC_YOPMYSQL_JDBC_URL
+        value: jdbc:mysql://10.151.11.3:3306/yop
+      - name: DSC_YOPMYSQL_DRIVER_CLASS
+        value: com.mysql.jdbc.Driver
+      - name: DSC_YOPMYSQL_USER
+        value: yopapp
+      - name: DSC_YOPMYSQL_PASSWORD
+        value: KY0ROHxIzmir1haeDDnpXw==
+      - name: DSC_YOPMYSQL_MIN
+        value: "2"
+      - name: DSC_YOPMYSQL_MAX
+        value: "5"
+      - name: DSC_CONFIGDS_JDBC_URL
+        value: jdbc:db2://db2.bass.3g:50002/cicd3g
+      - name: DSC_CONFIGDS_DRIVER_CLASS
+        value: com.ibm.db2.jcc.DB2Driver
+      - name: DSC_CONFIGDS_USER
+        value: testadm
+      - name: DSC_CONFIGDS_PASSWORD
+        value: mWekChrhA6w7FqG/gKE2Qg==
+      - name: DSC_CONFIGDS_SCHEMA
+        value: CONFIG
+      - name: DSC_CONFIGDS_MIN
+        value: "2"
+      - name: DSC_CONFIGDS_MAX
+        value: "5"
+      - name: FTP_HOST
+        value: 10.151.31.197
+      - name: FTP_PORT
+        value: "21"
+      - name: FTP_USERNAME
+        value: ucm
+      - name: FTP_PASSWORD
+        value: "123456"
+      - name: FTP_FILETYPE
+        value: "2"
+      - name: FTP_CONTROLENCODING
+        value: utf-8
+      - name: FTP_SERVERLANGUAGECODE
+        value: zh
+      - name: FTP_SYSTEM
+        value: UNIX
+      - name: REMOTE_CACHE_UTILS_INIT
+        value: com.yeepay.g3.utils.cache.remote.RemoteCacheUtils.init
+      - name: CONFIGURATION_UTILS_INIT
+        value: com.yeepay.g3.utils.config.ConfigurationUtils.init
+      - name: REMOTE_SERVICE_FACTORY_UTILS_INIT
+        value: com.yeepay.g3.utils.rmi.RemoteServiceFactory.init
+      - name: MONGO_REPLICA_SET_ADDRESS
+        value: 10.151.11.4:27017
+      - name: MONGO_HOST
+        value: 10.151.11.4
+      - name: MONGO_PORT
+        value: "27017"
+      - name: MONGO_CONNECTIONS_PER_HOST
+        value: "8"
+      - name: MONGO_THREADS_ALLOWED_TO_BLOCK_FOR_CONNECTION_MULTIPLIER
+        value: "4"
+      - name: MONGO_AUTO_CONNECT_RETRY
+        value: "true"
+      - name: MONGO_SOCKET_KEEP_ALIVE
+        value: "true"
+      - name: MONGO_SLAVE_OK
+        value: "true"
+      - name: MONGO_CONNECT_TIMEOUT
+        value: "10000"
+      - name: MONGO_MAX_WAIT_TIME
+        value: "5000"
+      - name: MONGO_SOCKET_TIMEOUT
+        value: "2500"
+      - name: REDIS_SENTINELS
+        value: redis1.bass.3g:26379
+      - name: REDIS_MASTER_NAME
+        value: mymaster
+      - name: REDIS_MAX_TOTAL
+        value: "20"
+      - name: REDIS_MAX_IDLE
+        value: "5"
+      - name: REDIS_MAX_WAITMILLIS
+        value: "1000"
+      - name: REDIS_TEST_ON_BORROW
+        value: "true"
+      - name: REDIS_TEST_ON_RETURN
+        value: "true"
+      - name: REDIS_TIMEOUT
+        value: "2000"
+      - name: REDIS_NEW_VERSION
+        value: "true"
+      - name: REDIS_MODE
+        value: sentinel
+      - name: YEEPAY_CONFIG_NAMESPACE
+        value: integration1-1
+      - name: YP_APP_NAME
+        value: yop-boss
+      - name: YP_DATA_CENTER
+        value: CICD_DEFAULT
+      - name: YP_DEPLOY_ENV
+        value: product
+      - name: YP_JVM_RESOURCE_CPU
+        value: "2"
+      - name: YP_JVM_RESOURCE_MEMORY
+        value: 4G
+      resources:
+        limits:
+          cpu: "2"
+          memory: 4G
+        requests:
+          cpu: 200m
+          memory: 2G
+    service:
+      type: NodePort
+      port: "8080"
+      targetPort: "8080"
+      nodePort: "30115"

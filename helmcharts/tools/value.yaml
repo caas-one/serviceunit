@@ -1,0 +1,55 @@
+replicaCount: 1
+
+image:
+  repository: artifact.paas.yp/yeepay-docker-dev-local/bankchannel-hessian
+  tag: "201905131745_7888d381"
+  pullPolicy: Always
+
+DebugImage:
+  repository: artifact.paas.yp/yeepay-docker-dev-local/troubleshooting
+  tag: "201809271441"
+  pullPolicy: Always
+
+imagePullSecrets: myregistrykey
+nameOverride: "bankchannel-hessian"
+fullnameOverride: ""
+
+service:
+  type: NodePort
+  port: 8080
+  nodePort: 30387
+
+env:
+- name: YP_APP_NAME
+  value: bankchannel-hessian
+- name: YP_DATA_CENTER
+  value: CICD_DEFAULT
+- name: YP_DEPLOY_ENV
+  value: product
+- name: DUBBO_APPLICATION_ENVIRONMENT
+  value: product
+- name: YP_JVM_RESOURCE_CPU
+  value: "2"
+- name: YP_JVM_RESOURCE_MEMORY
+  value: 4G
+
+ingress:
+  enabled: false
+  annotations: {}
+  paths: []
+  hosts:
+    - chart-example.local
+  tls: []
+
+resources:
+   limits:
+    cpu: "2"
+    memory: 4G
+   requests:
+    cpu: 200m
+    memory: 2G
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
