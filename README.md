@@ -1,1 +1,24 @@
 # serviceunit
+
+## Proposal
+
+Financial businesses are under heavy and strict supervision. Third-party financial payment companies build business on bank payment channel. This model brings much complexity to CICD. To solve these problems:
+1.Designed a CRD called Service Unit, a basic deploy unit in integration test case. Using yaml spec fields describing dependencies. Using Helm, it keeps the integration environment running. Also using a serverless bank payment channel mock server.
+2.Built a Ingress-like gateway which support service discovery as both inside and outside cluster applications could access any services using a wild DNS record (*.example.com) , without knowing NodePort anymore. Support basic load balancing, custom headers injection, automatically performance testing once enabled. 
+3.Developed a CLI tool, simplified service unit lifecycle management, allowing enterprise  authentication and authorization.
+
+## Ecosystem
+
+Financial businesses are special because of strict supervision and high customer expectations. It’s always hard to see a bank or payment service racing ahead in IT transformation. The problem is quality and stability of services. This proposal and open source projects are based on our years of experiences when trying to boost our business with CICD and improve engineering efficiency. In cloud era, Kubernetes gives every company a open, extensible, scalable platform to build any systems, it’s Kubernetes native. On the one hand, Kubernetes native CICD is part of FinTech, our proposal is a pretty good example to any other payment service companies. On the other hand, most proposals of CICD submitted pay attention on the deploy procedure itself, not whole integration test environment lifecycle management. Our solution solved this as one important piece of cloud native CICD puzzle. In a word, our proposal will give a brandnew understanding of cloud native CICD, and demonstrating either financial companies could be pioneer in cloud transformation.
+
+## Drafts
+
+We upgrade our CICD pipelines in a Kubernetes native way, using Helm and CRDs.
+
+At first we abstract a CRD called Service Unit. A service unit is defined as the basic deploy unit in a integration test case. It is composed of several related Services (with application Deployments). Using yaml manifests like Helm does, we spent several spec fields describing service dependencies. Both application configurations and dependencies are stored in ConfigMaps. We still using Charts saving different service unit. The control loop purpose of service unit is keeping the integration test environment running. We also take advantage of serverless mock server for simulating bank payment channel service.
+
+As we all can see, Kubernetes Namespace would be used for service isolation and application quota management. And we could make use of Kubernetes Service for service discovering in cluster. But here comes a problem that how can one service outside cluster discover another service deployed in cluster? NodePort is somewhat a choice but not enough. Because we need to manage them with extra energy. To solve this problem, we build a gateway framework which looks like an Ingress but support service discovery at the external of cluster. More specific, this gateway using wild DNS record (*.example.com) for service discovery of both inside and outside cluster services. So applications could access any services just using a URL, without knowing NodePort anymore. That means the application hasn’t been containerized could also benefits from this CICD upgradation. Developers and QA engineers could also inject custom headers to some requests go through this gateway. And load balancing is anyway a basic functionality of this gateway, performance testing could also be executed automatically once enabled.
+
+Finally we develop a command line tool, popularized by colleague developers, to providing simplified service unit lifecycle management. Developers could using Helm, but this tool comes without Kubernetes background knowledge. And it allow authentication and authorization for enterprise usage. The general process of this upgraded CICD pipelines is that developer submit code with git, hooks will be triggered to create a service unit integration test environment, which will deploy dependent services in the background. After a short while, test suites are executed, requests are sent to URLs. The service unit will be delete from cluster automatically once integration test finished.
+
+This Kubernetes native CICD help us build end-to-end integration test environment in seconds, with no more queueing. Both developers and QA engineers could self-service with the command line tool, greatly reducing communication costs and improve engineering efficiency dramatically. The related project in this talk is open sourced at: https://github.com/caas-one/serviceunit.
